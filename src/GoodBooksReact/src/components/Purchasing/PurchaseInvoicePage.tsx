@@ -2,6 +2,7 @@
 import {observer} from "mobx-react";
 import * as accounting from "accounting";
 
+import PhComplianceBanner from "../Compliance/PhComplianceBanner";
 import SelectVendor from "../Shared/Components/SelectVendor";
 import SelectPaymentTerm from "../Shared/Components/SelectPaymentTerm";
 import SelectLineItem from "../Shared/Components/SelectLineItem";
@@ -90,7 +91,7 @@ class CancelPurchaseInvoiceButton extends React.Component {
             + (location.port && ":" + location.port)
             + "/";
 
-        window.location.href = baseUrl + 'purchasing/purchaseorders';
+        window.location.href = baseUrl;
     }
 
     render() {
@@ -359,7 +360,8 @@ class PurchaseInvoiceTotals extends React.Component {
 class PurchaseInvoice extends React.Component {
     render() {
         return (
-            <div>
+            <div className="p-3">
+                <PhComplianceBanner />
                 <div id="divActionsTop">
                     <ObservedEditButton />
                 </div>
@@ -378,6 +380,4 @@ class PurchaseInvoice extends React.Component {
             );
     }
 }
-const ObservedPurchaseInvoice = observer(PurchaseInvoice);
-
-export default ObservedPurchaseInvoice;
+export default observer(PurchaseInvoice);

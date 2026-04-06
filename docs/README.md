@@ -140,6 +140,10 @@ To initialize a company, call the api endpoint directly http://localhost:8001/ap
 1. To test if Api is running correctly, you can simply call one **GET** endpoint. e.g. http://localhost:8001/api/sales/customers. This will return list of customers in JSON format.
 
 ## Build and Run "AccountGoWeb" (Front-end)
+In `src/AccountGoWeb`, run **`npm install`** first. That installs packages and copies **@coreui/icons** into `wwwroot/css/coreui/icons/` (so `~/css/coreui/icons/css/all.min.css` exists). If icons are missing, run **`npm run icons`**. After editing **`Scss/`**, run **`npm run css`** before `dotnet build`.
+
+Stylesheets use the **Sass module system** (`@use` / `sass:color`) so `npm run css` stays free of deprecation noise. If you add new `@import`-based partials, run **`npm run css:migrate`** (or `npx sass-migrator module --migrate-deps --load-path . Scss/dark.scss`) before committing.
+
 `AccountGoWeb` require more steps to completely build the front-end artifacts. To do this, follow the succeeding steps:
 
 1. Change directory to `src/AccountGoWeb` and open a new Visual Studio Code terminal
@@ -200,6 +204,10 @@ Dark theme
 ![accountgoweb](https://user-images.githubusercontent.com/17961526/47023961-5e762980-d193-11e8-8968-6874766971d3.png)
 ![accountgoweb](https://user-images.githubusercontent.com/17961526/47024191-cd538280-d193-11e8-92fe-7619b79b9307.png)
              
+
+# Troubleshooting (Linux)
+
+- **`dotnet watch` fails with inotify limit (128)** — see [troubleshooting-linux.md](./troubleshooting-linux.md) for sysctl limits, optional polling file watcher, or using `dotnet run` instead.
 
 # Help Wanted
 If you are a developer and wanted to take part as contributor/collaborator we are happy to welcome you! To start with, you can visit the issues page and pick an issue that you would like to work on.

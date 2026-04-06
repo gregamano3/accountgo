@@ -1,5 +1,7 @@
-// Import styles
-@import "node_modules/@coreui/coreui/scss/coreui";
+@use "sass:color";
+
+// Import styles (Bootstrap + CoreUI; overrides below rely on loaded defaults)
+@use "node_modules/@coreui/coreui/scss/coreui";
 
 // Variable overrides for dark theme
 $dark-primary:            #1C1C1C;
@@ -15,50 +17,50 @@ $storm:                 #4C4A48;
 // ==================================================================================================
 
 
-$body-bg: $dark-secondary;
-$body-color: white;
+coreui.$body-bg: $dark-secondary;
+coreui.$body-color: white;
 
-$link-hover-color:          lighten($link-color, 15%);
-$input-bg:                              $storm;
-$input-disabled-bg:                     $gray-500;
+coreui.$link-hover-color:          color.adjust(coreui.$link-color, $lightness: 15%);
+coreui.$input-bg:                              $storm;
+coreui.$input-disabled-bg:                     coreui.$gray-500;
 
-$input-color:                           $gray-100;
-$input-border-color:                    $dark-primary;
+coreui.$input-color:                           coreui.$gray-100;
+coreui.$input-border-color:                    $dark-primary;
 
-$input-placeholder-color:               $gray-500;
+coreui.$input-placeholder-color:               coreui.$gray-500;
 
-$custom-control-indicator-bg:           $gray-600;
+$custom-control-indicator-bg:           coreui.$gray-600;
 
-$custom-control-indicator-disabled-bg:          $gray-500;
-$custom-control-label-disabled-color:           $gray-300;
+$custom-control-indicator-disabled-bg:          coreui.$gray-500;
+$custom-control-label-disabled-color:           coreui.$gray-300;
 
-$dropdown-bg:                       $dark-secondary;
-$dropdown-border-color:             $dark-primary;
+coreui.$dropdown-bg:                       $dark-secondary;
+coreui.$dropdown-border-color:             $dark-primary;
 
-$dropdown-link-color:               $gray-300;
-$dropdown-link-hover-color:         $gray-300;
-$dropdown-link-hover-bg:            $gray-600;
+coreui.$dropdown-link-color:               coreui.$gray-300;
+coreui.$dropdown-link-hover-color:         coreui.$gray-300;
+coreui.$dropdown-link-hover-bg:            coreui.$gray-600;
 
-$dropdown-link-active-bg:           $component-active-bg;
+coreui.$dropdown-link-active-bg:           coreui.$component-active-bg;
 
-$nav-tabs-border-color:             $dark-primary;
+coreui.$nav-tabs-border-color:             $dark-primary;
 
 $jumbotron-bg:                      $dark-secondary;
 
-$card-border-color:                 $gray-300;
+coreui.$card-border-color:                 coreui.$gray-300;
 
-$card-cap-bg:                       $dark-primary;
-$card-bg:                           $dark-tertiary;
+coreui.$card-cap-bg:                       $dark-primary;
+coreui.$card-bg:                           $dark-tertiary;
 
-$modal-content-bg:                  $dark-tertiary;
+coreui.$modal-content-bg:                  $dark-tertiary;
 
-$list-group-bg:                     $dark-tertiary;
+coreui.$list-group-bg:                     $dark-tertiary;
 
-$list-group-hover-bg:               $dark-secondary;
+coreui.$list-group-hover-bg:               $dark-secondary;
 
-$list-group-action-color:           $gray-100;
+coreui.$list-group-action-color:           coreui.$gray-100;
 
-$breadcrumb-bg:                     $dark-tertiary;
+coreui.$breadcrumb-bg:                     $dark-tertiary;
 
 // ==================================================================================================
 // ==================================================================================================
@@ -69,11 +71,11 @@ $breadcrumb-bg:                     $dark-tertiary;
 
 $navbar-bg: $dark-tertiary;
 $navbar-color: #fff;
-$navbar-hover-color: $primary;
-$sidebar-bg: $dark-tertiary;
-$sidebar-nav-link-active-bg: $primary;
-$sidebar-nav-link-active-icon-color: $white;
+$navbar-hover-color: coreui.$primary;
+coreui.$sidebar-bg: $dark-tertiary;
+coreui.$sidebar-nav-link-active-bg: coreui.$primary;
+coreui.$sidebar-nav-link-active-icon-color: coreui.$white;
 $aside-menu-color: #fff;
 $aside-menu-bg: $dark-tertiary;
-$footer-bg: $dark-tertiary;
-$footer-color: $body-color;
+coreui.$footer-bg: $dark-tertiary;
+coreui.$footer-color: coreui.$body-color;

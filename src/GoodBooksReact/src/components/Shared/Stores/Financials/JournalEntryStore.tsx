@@ -1,6 +1,6 @@
 ﻿import {observable, extendObservable, makeObservable} from 'mobx';
 import axios from "axios";
-import Config from '../../Config';
+import { apiClient } from "../../../../api/client";
 
 import JournalEntry from './JournalEntry';
 import JournalEntryLine from './JournalEntryLine';
@@ -57,7 +57,7 @@ export default class JournalEntryStore {
     }
 
     getJournalEntry(journalEntryId: number) {
-        axios.get(Config.API_URL + "financials/journalentry?id=" + journalEntryId)
+        apiClient.get("financials/journalentry?id=" + journalEntryId)
             .then((result) => {
                 for (let i = 0; i < result.data.journalEntryLines.length; i++) {
                     const item = result.data.journalEntryLines[i];
@@ -80,14 +80,9 @@ export default class JournalEntryStore {
 
     saveNewJournalEntry() {
         if (this.validation() && this.validationErrors.length == 0) {
-            axios.post(Config.API_URL + "financials/savejournalentry", JSON.stringify(this.journalEntry),
-                {
-                    headers: {
-                        'Content-type': 'application/json'
-                    }
-                })
+            apiClient.post("financials/savejournalentry", this.journalEntry)
                 .then(() => {
-                    window.location.href = baseUrl + 'financials/journalentries';
+                    window.location.href = baseUrl;
                 })
                 .catch((error) => {
                     if (axios.isAxiosError(error)) {
@@ -130,14 +125,9 @@ export default class JournalEntryStore {
 
     postJournal() {
         if (this.validation() && this.validationErrors.length == 0) {
-            axios.post(Config.API_URL + "financials/postjournalentry", JSON.stringify(this.journalEntry),
-                {
-                    headers: {
-                        'Content-type': 'application/json'
-                    }
-                })
+            apiClient.post("financials/postjournalentry", this.journalEntry)
                 .then(() => {
-                    window.location.href = baseUrl + 'financials/journalentries';
+                    window.location.href = baseUrl;
                 })
                 .catch((error) => {
                     if (axios.isAxiosError(error)) {

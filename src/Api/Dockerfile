@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0-bullseye-slim-amd64 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build-env
 
 WORKDIR /app
 
@@ -7,12 +7,10 @@ COPY ./src/Core Core
 COPY ./src/Services Services
 COPY ./src/Dto Dto
 
-RUN ls -a
-
 RUN dotnet restore ./Api/*.csproj
 RUN dotnet publish ./Api/*.csproj -c Release -o out
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-bullseye-slim-amd64
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 
 ARG DBSERVER localhost
 ARG DBUSERID dbuser

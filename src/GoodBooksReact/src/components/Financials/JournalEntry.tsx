@@ -78,7 +78,7 @@ class CancelJournalEntryButton extends React.Component {
             + (location.port && ":" + location.port)
             + "/";
 
-        window.location.href = baseUrl + 'financials/journalentries';
+        window.location.href = baseUrl;
     }
 
     render() {

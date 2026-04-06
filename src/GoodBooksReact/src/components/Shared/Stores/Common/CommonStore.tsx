@@ -1,6 +1,5 @@
 ﻿import {makeObservable, observable} from 'mobx';
-import axios from "axios";
-import Config  from '../../Config';
+import { apiClient } from "../../../../api/client";
 
 export default class CommonStore {
     customers: string[] = [];
@@ -34,7 +33,7 @@ export default class CommonStore {
     loadCustomersLookup() {
         const localCustomers: string[] = [];
 
-        axios.get(Config.API_URL + "common/customers")
+        apiClient.get("common/customers")
             .then(result => {
                 const data = result.data;
                 for (let i = 0; i < Object.keys(data).length; i++) {
@@ -46,7 +45,7 @@ export default class CommonStore {
 
     loadPaymentTermsLookup() {
         const localPaymentTerms: string[] = [];
-        axios.get(Config.API_URL + "common/paymentterms")
+        apiClient.get("common/paymentterms")
             .then(result => {
                 const data = result.data;
                 for (let i = 0; i < Object.keys(data).length; i++) {
@@ -59,7 +58,7 @@ export default class CommonStore {
     loadVendorsLookup() {
         const localVendors: string[] = [];
         
-        axios.get(Config.API_URL + "common/vendors")
+        apiClient.get("common/vendors")
         .then(response => {
             const data = response.data;
             for (let i = 0; i < Object.keys(data).length; i++) {
@@ -75,7 +74,7 @@ export default class CommonStore {
     loadItemsLookup() {
         const localItems: object[] = [];
         
-        axios.get(Config.API_URL + "common/items")
+        apiClient.get("common/items")
         .then(response => {
             const data = response.data;
             for (let i = 0; i < Object.keys(data).length; i++) {
@@ -90,7 +89,7 @@ export default class CommonStore {
 
     loadMeasurementsLookup() {
         const localMeasurements: string[] = [];
-        axios.get(Config.API_URL + "common/measurements")
+        apiClient.get("common/measurements")
             .then(result => {
                 const data = result.data;
                 for (let i = 0; i < Object.keys(data).length; i++) {
@@ -102,7 +101,7 @@ export default class CommonStore {
 
     loadQuotationStatusLookup() {
         const localQuotationStatus: string[] = [];
-        axios.get(Config.API_URL + "common/salesquotationstatus")
+        apiClient.get("common/salesquotationstatus")
             .then(result => {
                 const data = result.data;
                 for (let i = 0; i < Object.keys(data).length; i++)
@@ -115,7 +114,7 @@ export default class CommonStore {
 
     loadAccountsLookup() {
         const localAccounts: string[] = []; 
-        axios.get(Config.API_URL + "common/postingaccounts")
+        apiClient.get("common/postingaccounts")
             .then(result => {
                 const data: string[] = result.data;
                 for (let i = 0; i < Object.keys(data).length; i++) {
@@ -126,7 +125,7 @@ export default class CommonStore {
     }
 
     getApplicableTaxes(itemId: number, partyId: number) {
-        const result = axios.get(Config.API_URL + "tax/gettax?itemId=" + itemId + "&partyId=" + partyId);
+        const result = apiClient.get("tax/gettax?itemId=" + itemId + "&partyId=" + partyId);
         result.then(function (result) {
             return result.data;
         });

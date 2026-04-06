@@ -1,6 +1,6 @@
 ﻿import {observable, extendObservable, autorun, makeObservable} from 'mobx';
 import axios from "axios";
-import Config from '../../Config';
+import { apiClient } from "../../../../api/client";
 
 import SalesQuotation from './SalesQuotation';
 import SalesQuotationLine from './SalesQuotationLine';
@@ -47,7 +47,7 @@ export default class SalesQuotationStore {
         autorun(() => this.computeTotals());
 
         if (quotationId !== undefined) {
-            const result = axios.get(Config.API_URL + "sales/quotation?id=" + quotationId);
+            const result = apiClient.get("sales/quotation?id=" + quotationId);
             result.then((result) => {
                 this.salesQuotation.id = result.data.id;
                 this.salesQuotation.paymentTermId = result.data.paymentTermId;
@@ -87,7 +87,7 @@ export default class SalesQuotationStore {
         for (let i = 0; i < this.salesQuotation.salesQuotationLines.length; i++) {
             const lineItem = this.salesQuotation.salesQuotationLines[i];
             rtotal = rtotal + this.getLineTotal(i);
-            axios.get(Config.API_URL + "tax/gettax?itemId=" + lineItem.itemId + "&partyId=" + this.salesQuotation.customerId + "&type=1")
+            apiClient.get("tax/gettax?itemId=" + lineItem.itemId + "&partyId=" + this.salesQuotation.customerId + "&type=1")
                 .then((result) => {
                     if (result.data.length > 0) {
                         ttotal = ttotal + this.commonStore.getSalesLineTaxAmount(lineItem.quantity, lineItem.amount, lineItem.discount, result.data);
@@ -105,16 +105,9 @@ export default class SalesQuotationStore {
 
         if (this.validation()) {
             if (this.validationErrors.length === 0) {
-                axios.post(Config.API_URL + "sales/savequotation", JSON.stringify(this.salesQuotation),
-                    {
-                        headers:
-                        {
-                            'Content-type': 'application/json'
-                        }
-                    }
-                )
+                apiClient.post("sales/savequotation", this.salesQuotation)
                     .then(() => {
-                        window.location.href = baseUrl + 'quotations';
+                        window.location.href = baseUrl;
                     })
                     .catch((error) => {
                         if (axios.isAxiosError(error)) {
@@ -131,16 +124,9 @@ export default class SalesQuotationStore {
     bookQuotation() {
         if (this.validation()) {
             if (this.validationErrors.length === 0) {
-                axios.post(Config.API_URL + "sales/bookquotation?id=" + String(this.salesQuotation.id),
-                    {
-                        headers:
-                        {
-                            'Content-type': 'application/json'
-                        }
-                    }
-                )
+                apiClient.post("sales/bookquotation?id=" + String(this.salesQuotation.id), {})
                     .then(() => {
-                        window.location.href = baseUrl + 'quotations';
+                        window.location.href = baseUrl;
                     })
                     .catch((error) => {
                         if (axios.isAxiosError(error)) {

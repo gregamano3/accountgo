@@ -1,6 +1,6 @@
 ﻿import {observable, extendObservable, autorun, makeObservable} from 'mobx';
 import axios from "axios";
-import Config from '../../Config';
+import { apiClient } from "../../../../api/client";
 
 import PurchaseOrder from './PurchaseOrder';
 import PurchaseOrderLine from './PurchaseOrderLine';
@@ -47,7 +47,7 @@ export default class PurchaseOrderStore {
         autorun(() => this.computeTotals());
 
         if (purchId !== undefined) {
-            axios.get(Config.API_URL + "purchasing/purchaseorder?id=" + purchId)
+            apiClient.get("purchasing/purchaseorder?id=" + purchId)
                 .then((result) => {
                     this.purchaseOrder.id = result.data.id;
                     this.purchaseOrder.paymentTermId = result.data.paymentTermId;
@@ -98,7 +98,7 @@ export default class PurchaseOrderStore {
         for (let i = 0; i < this.purchaseOrder.purchaseOrderLines.length; i++) {
             const lineItem = this.purchaseOrder.purchaseOrderLines[i];
             rtotal = rtotal + this.getLineTotal(i);
-            axios.get(Config.API_URL + "tax/gettax?itemId=" + lineItem.itemId + "&partyId=" + this.purchaseOrder.vendorId + "&type=2")
+            apiClient.get("tax/gettax?itemId=" + lineItem.itemId + "&partyId=" + this.purchaseOrder.vendorId + "&type=2")
                 .then((result) => {
                     if (result.data.length > 0) {
                         ttotal = ttotal + this.commonStore.getPurhcaseLineTaxAmount(lineItem.quantity, lineItem.amount, lineItem.discount, result.data);
@@ -115,14 +115,9 @@ export default class PurchaseOrderStore {
             this.purchaseOrder.orderDate = new Date(new Date(Date.now()).toISOString().substring(0, 10));
 
         if (this.validation() && this.validationErrors.length === 0) {
-            axios.post(Config.API_URL + "purchasing/savepurchaseorder", JSON.stringify(this.purchaseOrder),
-                {
-                    headers: {
-                        'Content-type': 'application/json'
-                    }
-                })
+            apiClient.post("purchasing/savepurchaseorder", this.purchaseOrder)
                 .then(() => {
-                    window.location.href = baseUrl + 'purchasing/purchaseorders';
+                    window.location.href = baseUrl;
                 })
                 .catch((error) => {
                     if (axios.isAxiosError(error)) {

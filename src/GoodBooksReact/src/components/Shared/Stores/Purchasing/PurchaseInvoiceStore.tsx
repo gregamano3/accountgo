@@ -1,6 +1,6 @@
 ﻿import {makeObservable, observable, extendObservable, autorun} from 'mobx';
 import axios from "axios";
-import Config from '../../Config';
+import { apiClient } from "../../../../api/client";
 
 import PurchaseInvoice from './PurchaseInvoice';
 import PurchaseInvoiceLine from './PurchaseInvoiceLine';
@@ -49,7 +49,7 @@ export default class PurchaseOrderStore {
         autorun(() => this.computeTotals());
 
         if (purchId !== undefined) {
-            axios.get(Config.API_URL + "purchasing/purchaseorder?id=" + purchId)
+            apiClient.get("purchasing/purchaseorder?id=" + purchId)
                 .then((result) => {
                     for (let i = 0; i < result.data.purchaseOrderLines.length; i++) {
                         if (result.data.purchaseOrderLines[i].remainingQtyToInvoice == 0)
@@ -76,7 +76,7 @@ export default class PurchaseOrderStore {
                 .catch(() => {});
         }
         else if (invoiceId !== undefined) {
-            axios.get(Config.API_URL + "purchasing/purchaseinvoice?id=" + invoiceId)
+            apiClient.get("purchasing/purchaseinvoice?id=" + invoiceId)
                 .then((result) => {
                     for (let i = 0; i < result.data.purchaseInvoiceLines.length; i++) {
                         this.addLineItem(
@@ -122,7 +122,7 @@ export default class PurchaseOrderStore {
         for (let i = 0; i < this.purchaseInvoice.purchaseInvoiceLines.length; i++) {
             const lineItem = this.purchaseInvoice.purchaseInvoiceLines[i];
             rtotal = rtotal + this.getLineTotal(i);
-            axios.get(Config.API_URL + "tax/gettax?itemId=" + lineItem.itemId + "&partyId=" + this.purchaseInvoice.vendorId + "&type=2")
+            apiClient.get("tax/gettax?itemId=" + lineItem.itemId + "&partyId=" + this.purchaseInvoice.vendorId + "&type=2")
                 .then((result) => {
                     if (result.data.length > 0) {
                         ttotal = ttotal + this.commonStore.getPurhcaseLineTaxAmount(lineItem.quantity, lineItem.amount, lineItem.discount, result.data);
@@ -136,14 +136,9 @@ export default class PurchaseOrderStore {
 
     savePurchaseInvoice() {
         if (this.validation() && this.validationErrors.length === 0) {
-            axios.post(Config.API_URL + "purchasing/savepurchaseinvoice", JSON.stringify(this.purchaseInvoice),
-                {
-                    headers: {
-                        'Content-type': 'application/json'
-                    }
-                })
+            apiClient.post("purchasing/savepurchaseinvoice", this.purchaseInvoice)
                 .then(() => {
-                    window.location.href = baseUrl + 'purchasing/purchaseinvoices';
+                    window.location.href = baseUrl;
                 })
                 .catch((error) => {
                     if (axios.isAxiosError(error)) {
@@ -158,14 +153,9 @@ export default class PurchaseOrderStore {
 
     postInvoice() {
         if (this.validation() && this.validationErrors.length === 0) {
-            axios.post(Config.API_URL + "purchasing/postpurchaseinvoice", JSON.stringify(this.purchaseInvoice),
-                {
-                    headers: {
-                        'Content-type': 'application/json'
-                    }
-                })
+            apiClient.post("purchasing/postpurchaseinvoice", this.purchaseInvoice)
                 .then(() => {
-                    window.location.href = baseUrl + 'purchasing/purchaseinvoices';
+                    window.location.href = baseUrl;
                 })
                 .catch((error) => {
                     if (axios.isAxiosError(error)) {

@@ -1,0 +1,46 @@
+/**
+ * GoodBooks — Bootstrap 5.3 variable overrides (load after bootstrap.css).
+ */
+
+/* Sticky top bar stacks above main scroll region */
+.app-top-header {
+    z-index: 1030;
+}
+
+:root {
+    --bs-body-font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --bs-body-bg: #f4f6f9;
+    --bs-body-color: #1a1d21;
+    --bs-primary: #2563eb;
+    --bs-primary-rgb: 37, 99, 235;
+    --bs-link-color: #2563eb;
+    --bs-link-hover-color: #1d4ed8;
+    --bs-border-radius: 0.5rem;
+    --bs-border-color: #e2e8f0;
+    --bs-card-border-color: rgba(15, 23, 42, 0.08);
+    --bs-heading-color: #0f172a;
+}
+
+.card {
+    --bs-card-bg: #fff;
+    --bs-card-cap-bg: rgba(15, 23, 42, 0.03);
+}
+
+.app-main-content {
+    background-color: var(--bs-body-bg);
+}
+
+/* Sidebar nav: active state uses Bootstrap utilities in markup; subtle hover */
+.app-sidebar .nav-link:not(.active):hover {
+    background-color: rgba(37, 99, 235, 0.06);
+    color: var(--bs-body-color);
+}
+
+.app-sidebar .nav-link.active .fa {
+    opacity: 1 !important;
+    color: inherit;
+}
+
+.letter-spacing {
+    letter-spacing: 0.05em;
+}

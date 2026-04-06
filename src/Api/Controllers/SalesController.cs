@@ -408,18 +408,24 @@ namespace Api.Controllers
         {
             var quote = _salesService.GetSalesQuotationById(id);
 
+            if (quote == null)
+            {
+                return NotFound();
+            }
+
             var quoteDto = new Dto.Sales.SalesQuotation()
             {
                 Id = quote.Id,
                 CustomerId = quote.CustomerId,
-                CustomerName = quote.Customer.Party.Name,
+                CustomerName = quote.Customer?.Party?.Name ?? string.Empty,
                 QuotationDate = quote.Date,
                 PaymentTermId = quote.PaymentTermId,
                 ReferenceNo = quote.ReferenceNo,
-                StatusId = (int)quote.Status
+                StatusId = quote.Status.HasValue ? (int)quote.Status.Value : 0
             };
 
-            foreach (var line in quote.SalesQuoteLines)
+            var lines = quote.SalesQuoteLines ?? Array.Empty<SalesQuoteLine>();
+            foreach (var line in lines)
             {
                 var lineDto = new Dto.Sales.SalesQuotationLine()
                 {
@@ -429,8 +435,8 @@ namespace Api.Controllers
                     Quantity = line.Quantity,
                     Amount = line.Amount,
                     Discount = line.Discount,
-                    ItemDescription = line.Item.Description,
-                    MeasurementDescription = line.Measurement.Description
+                    ItemDescription = line.Item?.Description,
+                    MeasurementDescription = line.Measurement?.Description
                 };
 
                 _logger.LogInformation("Quotation line: " + lineDto.ItemDescription);

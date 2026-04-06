@@ -1,6 +1,6 @@
 ﻿import {observable, extendObservable, autorun, makeObservable} from 'mobx';
 import axios from "axios";
-import Config from '../../Config';
+import { apiClient } from "../../../../api/client";
 
 import SalesInvoice from './SalesInvoice';
 import SalesInvoiceLine from './SalesInvoiceLine';
@@ -45,7 +45,7 @@ export default class SalesStore {
         autorun(() => this.computeTotals());
 
         if (orderId !== undefined) {
-            const result = axios.get(Config.API_URL + "sales/salesorder?id=" + orderId);
+            const result = apiClient.get("sales/salesorder?id=" + orderId);
             result.then((result) => {
 
                 for (let i = 0; i < result.data.salesOrderLines.length; i++) {
@@ -71,7 +71,7 @@ export default class SalesStore {
 
             });
         } else if (invoiceId !== undefined) {
-            const result = axios.get(Config.API_URL + "sales/salesinvoice?id=" + invoiceId);
+            const result = apiClient.get("sales/salesinvoice?id=" + invoiceId);
             result.then((result) => {
                 for (let i = 0; i < result.data.salesInvoiceLines.length; i++) {
                     this.addLineItem(
@@ -112,7 +112,7 @@ export default class SalesStore {
         for (let i = 0; i < this.salesInvoice.salesInvoiceLines.length; i++) {
             const lineItem = this.salesInvoice.salesInvoiceLines[i];
             rtotal = rtotal + this.getLineTotal(i);
-            axios.get(Config.API_URL + "tax/gettax?itemId=" + lineItem.itemId + "&partyId=" + this.salesInvoice.customerId + "&type=1")
+            apiClient.get("tax/gettax?itemId=" + lineItem.itemId + "&partyId=" + this.salesInvoice.customerId + "&type=1")
                 .then((result) => {
                     if (result.data.length > 0) {
                         ttotal = ttotal + this.commonStore.getSalesLineTaxAmount(lineItem.quantity, lineItem.amount, lineItem.discount, result.data);
@@ -130,14 +130,9 @@ export default class SalesStore {
             this.salesInvoice.invoiceDate = new Date(new Date(Date.now()).toISOString().substring(0, 10));
 
         if (this.validation() && this.validationErrors.length === 0) {
-            axios.post(Config.API_URL + "sales/savesalesinvoice", JSON.stringify(this.salesInvoice),
-                {
-                    headers: {
-                        'Content-type': 'application/json'
-                    }
-                })
+            apiClient.post("sales/savesalesinvoice", this.salesInvoice)
                 .then(() => {
-                    window.location.href = baseUrl + 'sales/salesinvoices';
+                    window.location.href = baseUrl;
                 })
                 .catch((error) => {
                     if (axios.isAxiosError(error)) {
@@ -163,14 +158,9 @@ export default class SalesStore {
 
     postInvoice() {
         if (this.validation() && this.validationErrors.length === 0) {
-            axios.post(Config.API_URL + "sales/postsalesinvoice", JSON.stringify(this.salesInvoice),
-                {
-                    headers: {
-                        'Content-type': 'application/json'
-                    }
-                })
+            apiClient.post("sales/postsalesinvoice", this.salesInvoice)
                 .then(() => {
-                    window.location.href = baseUrl + 'sales/salesinvoices';
+                    window.location.href = baseUrl;
                 })
                 .catch((error) => {
                     if (axios.isAxiosError(error)) {

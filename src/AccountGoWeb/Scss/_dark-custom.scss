@@ -1,9 +1,11 @@
+@use "node_modules/@coreui/coreui/scss/coreui";
+
 // Here you can add other styles for dark theme
 
 .nav-tabs {
   .nav-link {
     &.active {
-      color: $gray-300;
+      color: coreui.$gray-300;
       background: #252525;
       &:focus {
         background: #8d8b8b;

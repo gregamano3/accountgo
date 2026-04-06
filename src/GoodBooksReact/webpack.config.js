@@ -25,7 +25,7 @@ var config = {
         "quotations/salesquotation": scriptsDir + '/Quotations/SalesQuotation',
         "sales/salesinvoice": scriptsDir + '/Sales/SalesInvoice',
         "purchasing/purchaseorder": scriptsDir + '/Purchasing/PurchaseOrder',
-        "purchasing/purchaseinvoice": scriptsDir + '/Purchasing/PurchaseInvoice',
+        "purchasing/purchaseinvoice": scriptsDir + '/Purchasing/PurchaseInvoicePage',
         "financials/journalentry": scriptsDir + '/Financials/JournalEntry',
         vendor: ['react', 'react-dom']
     },

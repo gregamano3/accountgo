@@ -17,8 +17,9 @@ namespace Module.Tests
         public void LoadNetCoreApp21ModuleProject()
         {
             //Given
-            Constants.CodeBaseRootPath = GetExecutingDirectorybyAppDomain();
-            var path = Path.Combine(Constants.CodeBaseRootPath + "Modules" + "\\SampleNetStandard20\\Debug\\netstandard2.0\\", "SampleNetStandard20.dll");
+            var baseDir = GetExecutingDirectorybyAppDomain();
+            Constants.CodeBaseRootPath = baseDir;
+            var path = Path.Combine(baseDir, "SampleNetStandard20.dll");
             var assembly = new CustomAssemblyLoadContext().LoadFromAssemblyPath(path);
             var type = assembly.GetType("SampleNetStandard20.Class1");
             //When

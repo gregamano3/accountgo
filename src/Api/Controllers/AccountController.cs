@@ -1,4 +1,6 @@
 using Api.Data;
+using Api.Models;
+using Api.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Services.Administration;
@@ -11,77 +13,103 @@ namespace Api.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IAdministrationService _administrationService;
+        private readonly IJwtTokenService _jwtTokenService;
+        private readonly IConfiguration _configuration;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IAdministrationService administrationService,
-            ISecurityService securityService
+            ISecurityService securityService,
+            IJwtTokenService jwtTokenService,
+            IConfiguration configuration
             )
         {
             _userManager = userManager;
             _administrationService = administrationService;
+            _jwtTokenService = jwtTokenService;
+            _configuration = configuration;
         }
 
+        /// <summary>
+        /// Legacy JSON sign-in used by AccountGoWeb MVC. Returns a <c>result</c> property on success so the client can build a cookie session.
+        /// </summary>
         [HttpPost]
         [Route("SignIn")]
-        public async System.Threading.Tasks.Task<IActionResult> SignIn([FromBody]dynamic loginViewModel)
+        public async System.Threading.Tasks.Task<IActionResult> SignIn([FromBody] dynamic loginViewModel)
         {
             if (loginViewModel == null)
             {
                 throw new System.ArgumentNullException(nameof(loginViewModel));
             }
-            //var error = await _signInManager.PreSignInCheck(user);
-            //if (error != null)
-            //{
-            //    return error;
-            //}
 
-            //if (await IsLockedOut(user))
-            //{
-            //    return await LockedOut(user);
-            //}
             string password = loginViewModel.Password;
             string username = loginViewModel.Email;
-            
+
             try
             {
                 var applicationUser = await _userManager.FindByEmailAsync(username);
                 if (applicationUser == null)
                 {
                     System.Console.WriteLine($"Unable to load user with email '{username}'.");
+                    return Ok(new { message = "Invalid login attempt." });
                 }
+
                 if (await _userManager.CheckPasswordAsync(applicationUser, password))
                 {
-                    //await ResetLockout(user);
-                    return new ObjectResult(_userManager.FindByEmailAsync(applicationUser.Email));
+                    return Ok(new
+                    {
+                        result = new
+                        {
+                            succeeded = true,
+                            email = applicationUser.Email,
+                            id = applicationUser.Id
+                        }
+                    });
                 }
             }
-            catch(System.Exception ex)
+            catch (System.Exception ex)
             {
                 System.Console.WriteLine(ex.StackTrace);
             }
 
+            return Ok(new { message = "Invalid login attempt." });
+        }
 
-            //Logger.LogWarning(2, "User {userId} failed to provide the correct password.", await UserManager.GetUserIdAsync(user));
+        /// <summary>
+        /// JWT access token for SPA clients (GoodBooks React).
+        /// </summary>
+        [HttpPost]
+        [Route("token")]
+        public async System.Threading.Tasks.Task<IActionResult> Token([FromBody] TokenRequest body)
+        {
+            if (body == null || string.IsNullOrWhiteSpace(body.Email) || string.IsNullOrWhiteSpace(body.Password))
+            {
+                return BadRequest(new { message = "Email and password are required." });
+            }
 
-            //if (_userManager.SupportsUserLockout && lockoutOnFailure)
-            //{
-            //    // If lockout is requested, increment access failed count which might lock out the user
-            //    await _userManager.AccessFailedAsync(user);
-            //    if (await _userManager.IsLockedOutAsync(user))
-            //    {
-            //        return await LockedOut(user);
-            //    }
-            //}
-            //return SignInResult.Failed;
-            // If we got this far, something failed, redisplay form
-            return new BadRequestObjectResult(Microsoft.AspNetCore.Identity.SignInResult.Failed);
+            var user = await _userManager.FindByEmailAsync(body.Email.Trim());
+            if (user == null || !await _userManager.CheckPasswordAsync(user, body.Password))
+            {
+                return Unauthorized(new { message = "Invalid email or password." });
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var token = _jwtTokenService.CreateAccessToken(user, roles);
+            var minutes = int.TryParse(_configuration["Jwt:AccessTokenMinutes"], out var m) ? m : 480;
+
+            return Ok(new
+            {
+                access_token = token,
+                token_type = "Bearer",
+                expires_in = minutes * 60,
+                email = user.Email
+            });
         }
 
         [HttpPost]
         [Route("AddNewUser")]
-        public async System.Threading.Tasks.Task<IActionResult> AddNewUser([FromBody]dynamic registerViewModel)
+        public async System.Threading.Tasks.Task<IActionResult> AddNewUser([FromBody] dynamic registerViewModel)
         {
             try
             {
@@ -114,7 +142,7 @@ namespace Api.Controllers
                 }
                 return new BadRequestObjectResult(result);
             }
-            catch(System.Exception ex)
+            catch (System.Exception ex)
             {
                 var errors = new[] { ex.InnerException != null ? ex.InnerException.Message : ex.Message };
                 return new BadRequestObjectResult(errors);

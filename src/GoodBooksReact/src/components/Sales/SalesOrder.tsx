@@ -56,7 +56,7 @@ class CancelOrderButton extends React.Component {
   cancelOnClick() {
     const baseUrl = location.protocol + "//" + location.hostname + (location.port && ":" + location.port) + "/";
 
-    window.location.href = baseUrl + "sales/salesorders";
+    window.location.href = baseUrl;
   }
 
   render() {

@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0-bullseye-slim-amd64 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build-env
 
 WORKDIR /app
 
@@ -24,7 +24,6 @@ RUN curl -SL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-lin
 WORKDIR /app/AccountGoWeb
 
 RUN npm install --legacy-peer-deps
-RUN npm rebuild node-sass
 RUN npm run css
 
 WORKDIR /app
@@ -36,7 +35,7 @@ RUN dotnet build ./Modules/SampleModule/*.csproj
 RUN dotnet restore ./AccountGoWeb/*.csproj
 RUN dotnet publish ./AccountGoWeb/*.csproj -c Release -o out
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-bullseye-slim-amd64
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 
 WORKDIR /app
 

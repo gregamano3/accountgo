@@ -1,4 +1,4 @@
 // Override Boostrap variables
-@import "../shared-variables";
-@import "node_modules/bootstrap/scss/mixins";
-@import "node_modules/@coreui/coreui/scss/variables";
+@use "../shared-variables";
+@use "node_modules/bootstrap/scss/mixins";
+@use "node_modules/@coreui/coreui/scss/variables";

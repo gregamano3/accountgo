@@ -7,6 +7,7 @@ import SelectCustomer from "../Shared/Components/SelectCustomer";
 import SelectPaymentTerm from "../Shared/Components/SelectPaymentTerm";
 import SelectLineItem from "../Shared/Components/SelectLineItem";
 import SelectLineMeasurement from "../Shared/Components/SelectLineMeasurement";
+import PhComplianceBanner from "../Compliance/PhComplianceBanner";
 import SalesInvoiceLine from "../Shared/Stores/Sales/SalesInvoiceLine";
 import SalesInvoiceStore from "../Shared/Stores/Sales/SalesInvoiceStore";
 
@@ -86,7 +87,7 @@ class CancelInvoiceButton extends React.Component {
             + (location.port && ":" + location.port)
             + "/";
 
-        window.location.href = baseUrl + 'sales/salesinvoices';
+        window.location.href = baseUrl;
     }
 
     render() {
@@ -349,7 +350,8 @@ const ObservedSalesInvoiceTotals = observer(SalesInvoiceTotals);
 class SalesInvoice extends React.Component {
     render() {
         return (
-            <div>
+            <div className="p-3">
+                <PhComplianceBanner />
                 <div id="divActionsTop">
                     <ObservedEditButton />
                 </div>

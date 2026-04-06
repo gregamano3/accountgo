@@ -3,11 +3,16 @@
   "name": "accountgoweb",
   "private": true,
   "scripts": {
+    "icons": "node scripts/copy-coreui-icons.mjs",
+    "postinstall": "node scripts/copy-coreui-icons.mjs",
     "webpack": "webpack",
     "gulp": "gulp",
     "tsc": "tsc",
     "css": "npm run css-compile-minified",
-    "css-compile-minified": "node-sass --output-style compressed --source-map true --source-map-contents true --precision 6 Scss -o wwwroot/css"
+    "css-compile-minified": "sass Scss:wwwroot/css --style=compressed --source-map --load-path=. --quiet-deps",
+    "build:styles": "npm run css",
+    "build:web": "npm run css",
+    "css:migrate": "sass-migrator module --migrate-deps --load-path . Scss/dark.scss && sass-migrator module --migrate-deps --load-path . Scss/light.scss && sass-migrator module --migrate-deps --load-path . Scss/vendors/pace-progress/pace.scss"
   },
   "devDependencies": {
     "@coreui/coreui": "^5.2.0",
@@ -23,7 +28,8 @@
     "mobx": "^5.15.7",
     "mobx-react": "^5.4.4",
     "mobx-react-devtools": "^6.1.1",
-    "node-sass": "^8.0.0",
+    "sass": "^1.85.0",
+    "sass-migrator": "^2.5.7",
     "perfect-scrollbar": "^1.5.5",
     "popper.js": "^1.16.1",
     "react": "^16.14.0",
