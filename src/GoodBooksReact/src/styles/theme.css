@@ -41,6 +41,20 @@
     color: inherit;
 }
 
+.app-sidebar-collapsed .nav-link {
+    min-width: 0;
+}
+
+.nav-section-heading {
+    cursor: pointer;
+    user-select: none;
+}
+
+.nav-section-heading:hover {
+    background-color: rgba(15, 23, 42, 0.04) !important;
+    border-radius: 0.375rem;
+}
+
 .letter-spacing {
     letter-spacing: 0.05em;
 }
